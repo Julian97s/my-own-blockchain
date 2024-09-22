@@ -6,6 +6,7 @@ public class Block {
     public String previousHash;
     private String data;
     private long timeStamp;
+    private int nonce; //"created for one special ocation"
 
     public Block (String data, String previousHash){
         this.data = data;
@@ -19,10 +20,22 @@ public class Block {
         String calculated_hash = StringUtil.applySha256(
                                                         this.previousHash +
                                                         Long.toString(this.timeStamp) + 
+                                                        Integer.toString(this.nonce) +
                                                         this.data
                                                         );
         return calculated_hash; // shouldn't the parameters be this. ? in the website i got this it was not this.
     }
+
+    public void mineBlock (int difficulty) {
+        // Is there any resource where i can see this graphically?
+        String target = new String(new char[difficulty]).replace("\0","0"); // create a string with difficulty * 0
+        while (!this.hash.substring(0,difficulty).equals(target)) {
+            nonce++;
+            hash = calculateHash();
+        }
+        System.out.println("Block mined!: " + this.hash);
+    }
+
 }
 
 
