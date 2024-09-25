@@ -30,3 +30,7 @@ replay_pid*
 build
 
 .DS_Store
+
+.vscode
+
+buildSrc
