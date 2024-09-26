@@ -1,6 +1,9 @@
 package src;
 
 import java.security.MessageDigest;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.util.Base64;
 
 // this helper function will take a string and return a signature as a string after a SHA-256 is applied
 
@@ -25,4 +28,37 @@ public class StringUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static byte[] applyACDSASig(PrivateKey privateKey, String input) {
+        Signature dsa;
+        byte[] output = new byte[0];
+        try {
+            dsa = Signature.getInstance("ECDSA","BC");
+            dsa.initSign(privateKey);
+            byte[] strByte = input.getBytes();
+            dsa.update(strByte);
+            byte[] realSign = dsa.sign();
+            output = realSign;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return output;
+    }
+
+    //Verify s String signature 
+    public static boolean verifyECDSASign(PublicKey publicKey, String data, byte[] signature){
+        try {
+            Signature ecdsaVerify = Signature.getInstance("ECDSA","BC");
+            ecdsaVerify.initVerify(publicKey);
+            ecdsaVerify.update(data.getBytes());
+            return ecdsaVerify.verify(signature);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getStringFromKey(Key key){
+        return Base64.getEncoder().encodeToString(key.getEncoded());
+    }
+
 }
